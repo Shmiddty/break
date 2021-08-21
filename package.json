@@ -1,0 +1,11 @@
+{
+  "name": "break",
+  "version": "0.0.1",
+  "description": "entry for Mini Jam: Break",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shmiddty",
+  "license": "MIT"
+}
