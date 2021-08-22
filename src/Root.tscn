@@ -213,7 +213,7 @@ resources = [ PoolStringArray( "01", "01 2", "02", "02 2", "03", "03 2", "04", "
 position = Vector2( 256, 256 )
 scale = Vector2( 4, 4 )
 frames = SubResource( 34 )
-frame = 6
+frame = 8
 playing = true
 
 [node name="waves" type="AudioStreamPlayer" parent="background"]

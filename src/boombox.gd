@@ -39,8 +39,8 @@ func seek(dir):
 
 func nextTrack():
 	print("next ", currentTrack)
-	if node.is_playing():
-		seek(1)
+	#if node.is_playing():
+	seek(1)
 	
 func pauseTrack():
 	currentTime = node.get_playback_position()
