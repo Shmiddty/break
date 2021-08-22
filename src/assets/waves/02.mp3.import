@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/02.mp3-f049fc4573da7c8adc695ce88aa476fb.mp3str"
+
+[deps]
+
+source_file="res://assets/waves/02.mp3"
+dest_files=[ "res://.import/02.mp3-f049fc4573da7c8adc695ce88aa476fb.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0
