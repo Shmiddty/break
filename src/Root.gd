@@ -30,7 +30,3 @@ func _on_hammock_animation_finished():
 	if hammockCount == hammockMax:
 		hammock.stop()
 		hammockCount = 0
-
-# ---
-
-
