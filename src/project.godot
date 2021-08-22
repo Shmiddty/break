@@ -23,6 +23,11 @@ window/handheld/orientation="portrait"
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 
+[global]
+
+oversampling=false
+"Use Oversampling"=false
+
 [physics]
 
 common/enable_pause_aware_picking=true
@@ -33,3 +38,4 @@ quality/driver/driver_name="GLES2"
 vram_compression/import_etc=true
 vram_compression/import_etc2=false
 environment/default_environment="res://default_env.tres"
+quality/dynamic_fonts/use_oversampling=false
