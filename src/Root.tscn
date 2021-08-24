@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=2]
+[gd_scene load_steps=73 format=2]
 
 [ext_resource path="res://assets/sprites/bg.png" type="Texture" id=1]
 [ext_resource path="res://assets/sprites/hammock.png" type="Texture" id=2]
@@ -6,8 +6,10 @@
 [ext_resource path="res://assets/waves/waves.ogg" type="AudioStream" id=4]
 [ext_resource path="res://assets/lofi/04.mp3" type="AudioStream" id=5]
 [ext_resource path="res://hammock.gd" type="Script" id=6]
+[ext_resource path="res://assets/sprites/tape.png" type="Texture" id=7]
 [ext_resource path="res://assets/lofi/01.mp3" type="AudioStream" id=8]
 [ext_resource path="res://assets/lofi/07.mp3" type="AudioStream" id=9]
+[ext_resource path="res://tape.gd" type="Script" id=10]
 [ext_resource path="res://assets/lofi/09.mp3" type="AudioStream" id=11]
 [ext_resource path="res://assets/lofi/02.mp3" type="AudioStream" id=12]
 [ext_resource path="res://assets/lofi/03.mp3" type="AudioStream" id=13]
@@ -159,16 +161,67 @@ animations = [ {
 "speed": 8.0
 } ]
 
-[sub_resource type="AtlasTexture" id=39]
+[sub_resource type="AtlasTexture" id=54]
 atlas = ExtResource( 16 )
-region = Rect2( 0, 0, 128, 128 )
+region = Rect2( 0, 66, 39, 33 )
+
+[sub_resource type="AtlasTexture" id=45]
+atlas = ExtResource( 16 )
+region = Rect2( 0, 0, 39, 33 )
+
+[sub_resource type="AtlasTexture" id=55]
+atlas = ExtResource( 16 )
+region = Rect2( 0, 99, 39, 33 )
+
+[sub_resource type="AtlasTexture" id=56]
+atlas = ExtResource( 16 )
+region = Rect2( 0, 33, 39, 33 )
 
 [sub_resource type="SpriteFrames" id=40]
 animations = [ {
-"frames": [ SubResource( 39 ) ],
+"frames": [ SubResource( 54 ) ],
+"loop": true,
+"name": "play",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 45 ) ],
+"loop": true,
+"name": "pause",
+"speed": 1.0
+}, {
+"frames": [ SubResource( 55 ) ],
+"loop": true,
+"name": "fast_forward",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 56 ) ],
+"loop": true,
+"name": "rewind",
+"speed": 5.0
+} ]
+
+[sub_resource type="AtlasTexture" id=49]
+atlas = ExtResource( 7 )
+region = Rect2( 0, 0, 10, 6 )
+
+[sub_resource type="AtlasTexture" id=50]
+atlas = ExtResource( 7 )
+region = Rect2( 0, 6, 10, 6 )
+
+[sub_resource type="AtlasTexture" id=51]
+atlas = ExtResource( 7 )
+region = Rect2( 0, 12, 10, 6 )
+
+[sub_resource type="AtlasTexture" id=52]
+atlas = ExtResource( 7 )
+region = Rect2( 0, 18, 10, 6 )
+
+[sub_resource type="SpriteFrames" id=53]
+animations = [ {
+"frames": [ SubResource( 49 ), SubResource( 50 ), SubResource( 51 ), SubResource( 52 ) ],
 "loop": true,
 "name": "default",
-"speed": 1.0
+"speed": 5.0
 } ]
 
 [sub_resource type="AtlasTexture" id=41]
@@ -210,7 +263,7 @@ script = ExtResource( 17 )
 position = Vector2( 256, 256 )
 scale = Vector2( 4, 4 )
 frames = SubResource( 38 )
-frame = 25
+frame = 21
 playing = true
 
 [node name="waves" type="AudioStreamPlayer" parent="background"]
@@ -218,34 +271,40 @@ stream = ExtResource( 4 )
 bus = "Ambient"
 
 [node name="boombox" type="AnimatedSprite" parent="."]
-position = Vector2( 256, 256 )
+position = Vector2( 80, 420 )
 scale = Vector2( 4, 4 )
 frames = SubResource( 40 )
+animation = "pause"
 script = ExtResource( 18 )
 
-[node name="previous" type="TextureButton" parent="boombox"]
-margin_left = -47.5
-margin_top = 35.5
-margin_right = -44.5
-margin_bottom = 38.5
+[node name="tape" type="AnimatedSprite" parent="boombox"]
+position = Vector2( 5, -3 )
+frames = SubResource( 53 )
+script = ExtResource( 10 )
+
+[node name="rewind" type="TextureButton" parent="boombox"]
+margin_left = -1.0
+margin_top = -11.0
+margin_right = 2.0
+margin_bottom = -7.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="playpause" type="TextureButton" parent="boombox"]
-margin_left = -44.5
-margin_top = 35.5
-margin_right = -41.5
-margin_bottom = 38.5
+margin_left = 3.0
+margin_top = -11.0
+margin_right = 7.0
+margin_bottom = -7.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="next" type="TextureButton" parent="boombox"]
-margin_left = -41.5
-margin_top = 35.5
-margin_right = -38.5
-margin_bottom = 38.5
+[node name="fforward" type="TextureButton" parent="boombox"]
+margin_left = 8.0
+margin_top = -11.0
+margin_right = 11.0
+margin_bottom = -7.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -254,39 +313,51 @@ __meta__ = {
 
 [node name="01" type="AudioStreamPlayer" parent="boombox/tracks"]
 stream = ExtResource( 8 )
+bus = "Music"
 
 [node name="02" type="AudioStreamPlayer" parent="boombox/tracks"]
 stream = ExtResource( 12 )
+bus = "Music"
 
 [node name="03" type="AudioStreamPlayer" parent="boombox/tracks"]
 stream = ExtResource( 13 )
+bus = "Music"
 
 [node name="04" type="AudioStreamPlayer" parent="boombox/tracks"]
 stream = ExtResource( 5 )
+bus = "Music"
 
 [node name="05" type="AudioStreamPlayer" parent="boombox/tracks"]
 stream = ExtResource( 14 )
+bus = "Music"
 
 [node name="06" type="AudioStreamPlayer" parent="boombox/tracks"]
 stream = ExtResource( 3 )
+bus = "Music"
 
 [node name="07" type="AudioStreamPlayer" parent="boombox/tracks"]
 stream = ExtResource( 9 )
+bus = "Music"
 
 [node name="08" type="AudioStreamPlayer" parent="boombox/tracks"]
 stream = ExtResource( 15 )
+bus = "Music"
 
 [node name="09" type="AudioStreamPlayer" parent="boombox/tracks"]
 stream = ExtResource( 11 )
+bus = "Music"
 
 [node name="click" type="AudioStreamPlayer" parent="boombox"]
 stream = ExtResource( 22 )
+bus = "SFX"
 
-[node name="postSeekClick" type="AudioStreamPlayer2D" parent="boombox"]
+[node name="postSeekClick" type="AudioStreamPlayer" parent="boombox"]
 stream = ExtResource( 22 )
+bus = "SFX"
 
 [node name="seeking" type="AudioStreamPlayer" parent="boombox"]
 stream = ExtResource( 21 )
+bus = "SFX"
 
 [node name="Timer" type="Timer" parent="boombox"]
 one_shot = true
@@ -313,7 +384,7 @@ __meta__ = {
 margin_right = 512.0
 margin_bottom = 512.0
 mouse_filter = 2
-color = Color( 0, 0, 0, 1 )
+color = Color( 0, 0, 0, 0 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -321,12 +392,9 @@ __meta__ = {
 [node name="ResourcePreloader" type="ResourcePreloader" parent="."]
 resources = [ PoolStringArray( "01", "01 2", "02", "02 2", "03", "03 2", "04", "04 2", "05", "06", "07", "08", "09", "bg", "boombox", "hammock" ), [ ExtResource( 8 ), SubResource( 1 ), ExtResource( 12 ), SubResource( 2 ), ExtResource( 13 ), SubResource( 3 ), ExtResource( 5 ), SubResource( 4 ), ExtResource( 14 ), ExtResource( 3 ), ExtResource( 9 ), ExtResource( 15 ), ExtResource( 11 ), ExtResource( 1 ), ExtResource( 16 ), ExtResource( 2 ) ] ]
 
-[connection signal="pressed" from="boombox/previous" to="boombox" method="startSeeking" binds= [ -1 ]]
-[connection signal="pressed" from="boombox/previous" to="boombox" method="playClick"]
-[connection signal="pressed" from="boombox/playpause" to="boombox" method="togglePlaying"]
-[connection signal="pressed" from="boombox/playpause" to="boombox" method="playClick"]
-[connection signal="pressed" from="boombox/next" to="boombox" method="startSeeking" binds= [ 1 ]]
-[connection signal="pressed" from="boombox/next" to="boombox" method="playClick"]
+[connection signal="pressed" from="boombox/rewind" to="boombox" method="boom_rewind"]
+[connection signal="pressed" from="boombox/playpause" to="boombox" method="boom_toggle"]
+[connection signal="pressed" from="boombox/fforward" to="boombox" method="boom_fforward"]
 [connection signal="finished" from="boombox/tracks/01" to="boombox" method="nextTrack"]
 [connection signal="finished" from="boombox/tracks/02" to="boombox" method="nextTrack"]
 [connection signal="finished" from="boombox/tracks/03" to="boombox" method="nextTrack"]
@@ -335,8 +403,9 @@ resources = [ PoolStringArray( "01", "01 2", "02", "02 2", "03", "03 2", "04", "
 [connection signal="finished" from="boombox/tracks/06" to="boombox" method="nextTrack"]
 [connection signal="finished" from="boombox/tracks/07" to="boombox" method="nextTrack"]
 [connection signal="finished" from="boombox/tracks/08" to="boombox" method="nextTrack"]
-[connection signal="finished" from="boombox/tracks/09" to="boombox" method="nextTrack"]
-[connection signal="finished" from="boombox/postSeekClick" to="boombox" method="_on_postSeekClick_finished"]
+[connection signal="finished" from="boombox/tracks/09" to="boombox" method="boom_pause"]
+[connection signal="finished" from="boombox/postSeekClick" to="boombox" method="_actually_play"]
+[connection signal="finished" from="boombox/seeking" to="boombox" method="boom_play"]
 [connection signal="timeout" from="boombox/Timer" to="boombox" method="doneSeeking"]
 [connection signal="animation_finished" from="hammock" to="hammock" method="_on_hammock_animation_finished"]
 [connection signal="pressed" from="hammock/Hammock Clicker" to="hammock" method="sway"]

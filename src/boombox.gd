@@ -1,107 +1,124 @@
 extends AnimatedSprite
 
 # Music Sequencing
-# TODO: maybe it should stop at 9 and play a "click" sound
-# TODO: for skipping tracks, the sound of a cassette tape fast forwarding would be cool
-
-var rng = RandomNumberGenerator.new()
-var click
-var psClick
-var seeking
-var seekTimer
-var seekDir = 1
-var currentTrack = 1
+var seekDir = 0
+var currentTrack = 0
 var currentTime = 0
-var node
 var numTracks = 9
-var isPlaying = true
+var playTime = 0
 
-func _ready():
-	updateNode()
+var nodes = []
+var times = []
+var runningTime = []
 
-func updateNode():
-	node = get_node("tracks/0" + String(currentTrack))
-	click = get_node("click")
-	psClick = get_node("postSeekClick")
-	seeking = get_node("seeking")
-	seekTimer = get_node("Timer")
+func initNodes():
+	var prevTime = 0
+	for n in numTracks:
+		nodes.append(get_node("tracks/0" + String(n + 1)))
+		times.append(nodes[n].stream.get_length())
+		if n > 0:
+			prevTime = runningTime[n - 1]
+			
+		runningTime.append(prevTime + times[n])
+	pass
+
+func cur():
+	return nodes[currentTrack]
+
+func _ready(): 
+	initNodes()
+	pass
+	
+func _process(delta):
+	var prev = 0
+	if currentTrack > 0:
+		prev = runningTime[currentTrack - 1]
+	playTime = prev + cur().get_playback_position()
+	get_node("tape").setProgress(playTime/runningTime[numTracks-1])
+	# this works but isn't quite right.
+	# TODO: this does't currently account for tape position based on seeking.
+	pass
 
 func seek(dir):
-	# NOTE: AudioStreamPlayer.finished is emitted when you .stop() it
-	pauseTrack()
-	
 	currentTrack = currentTrack + dir
-	if currentTrack < 1:
-		currentTrack = 1
-	if currentTrack > numTracks:
-		currentTrack = numTracks
-	updateNode()
-	
-	playTrack(0)
-
-func nextTrack():
-	print("next ", currentTrack)
-	#if node.is_playing():
-	seek(1)
-	
-func pauseTrack():
-	currentTime = node.get_playback_position()
-	node.set_stream_paused(true)
-	
-func playTrack(time):
-	node.set_stream_paused(false)
-	node.play(time)
-	
-func togglePlaying():
-	print("toggle")
-	if node.get_stream_paused():
-		seekDir = 0
-		psClick.play(0)
+	if currentTrack < 0:
+		currentTrack = 0
+	elif currentTrack >= numTracks:
+		currentTrack = numTracks - 1
 	else:
-		pauseTrack()
-
-func previousTrack():
-	print("previous ", currentTrack)
-	seek(-1)
+		currentTime = 0
+	pass
 
 func playClick():
-	click.play(0)
+	get_node("click").play(0)
+	pass
 
 func getSeekTime(dir):
-	var pos = node.get_playback_position()
-	if dir > 0 && currentTrack < numTracks:
-		return node.stream.get_length() - pos
-	elif dir < 0 && currentTrack > 1:
-		return pos + get_node("tracks/0" + String(currentTrack - 1)).stream.get_length()
-	elif dir < 0 && currentTrack == 1:
+	var pos = cur().get_playback_position()
+	if dir > 0 && currentTrack < numTracks - 1:
+		return times[currentTrack] - pos
+	elif dir < 0 && currentTrack > 0:
+		return pos + times[currentTrack - 1]
+	elif dir < 0 && currentTrack == 0:
 		return pos
 	else:
 		return 0
+	pass
 
 func startSeeking(dir):
-	if dir == 1 && currentTrack == numTracks:
+	if dir == 1 && currentTrack == numTracks - 1:
 		return
 		
+	# TODO: handle interrupted seeks correctly. 
 	seekDir = dir
 	var time = getSeekTime(dir) / 32
-	
-	print("seek ", time)
-	if time > 1:
-		pauseTrack()
-		seeking.play(rand_range(0, 5))
-		seekTimer.set_wait_time(time)
-		seekTimer.start()
-	else:
-		seek(dir) 
+	get_node("seeking").play(rand_range(0, 5))
+	get_node("Timer").set_wait_time(time)
+	get_node("Timer").start()
+	pass
 	
 func doneSeeking():
-	seeking.stop()
-	psClick.play(0)
+	get_node("seeking").stop()
+	pass
 
-func _on_postSeekClick_finished():
-	if seekDir > 0:
-		nextTrack()
-	elif seekDir < 0:
-		previousTrack()
+func _actually_play():
+	seek(seekDir)
+	cur().set_stream_paused(false)
+	cur().play(currentTime)
+	pass
+
+func boom_play():
+	play("play")
+	get_node("postSeekClick").play(0)
+	pass
+	
+func boom_pause():
+	playClick()
+	play("pause")
+	currentTime = cur().get_playback_position()
+	cur().set_stream_paused(true)
+	pass
+	
+func boom_toggle():
+	if cur().get_stream_paused():
+		boom_play()
 	else:
-		playTrack(currentTime)
+		boom_pause()
+
+func boom_fforward():
+	playClick()
+	play("fast_forward")
+	cur().set_stream_paused(true)
+	startSeeking(1)
+	pass
+	
+func boom_rewind():
+	playClick()
+	play("rewind")
+	cur().set_stream_paused(true)
+	startSeeking(-1)
+	pass
+
+func nextTrack():
+	seekDir = 1
+	_actually_play()

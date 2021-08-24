@@ -10,4 +10,4 @@ func _ready():
 	waves.play()
 
 func _on_Tween_tween_all_completed():
-	get_node("boombox").doneSeeking()
+	get_node("boombox").boom_play()
