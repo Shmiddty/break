@@ -11,7 +11,7 @@ var seeking
 var seekTimer
 var seekDir = 1
 var currentTrack = 1
-var currentTime
+var currentTime = 0
 var node
 var numTracks = 9
 var isPlaying = true
@@ -97,7 +97,6 @@ func startSeeking(dir):
 func doneSeeking():
 	seeking.stop()
 	psClick.play(0)
-	
 
 func _on_postSeekClick_finished():
 	if seekDir > 0:
