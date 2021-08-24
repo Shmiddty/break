@@ -6,6 +6,7 @@ extends AnimatedSprite
 
 var rng = RandomNumberGenerator.new()
 var click
+var psClick
 var seeking
 var seekTimer
 var seekDir = 1
@@ -21,6 +22,7 @@ func _ready():
 func updateNode():
 	node = get_node("tracks/0" + String(currentTrack))
 	click = get_node("click")
+	psClick = get_node("postSeekClick")
 	seeking = get_node("seeking")
 	seekTimer = get_node("Timer")
 
@@ -53,7 +55,8 @@ func playTrack(time):
 func togglePlaying():
 	print("toggle")
 	if node.get_stream_paused():
-		playTrack(currentTime)
+		seekDir = 0
+		psClick.play(0)
 	else:
 		pauseTrack()
 
@@ -93,8 +96,13 @@ func startSeeking(dir):
 	
 func doneSeeking():
 	seeking.stop()
-	click.play(0)
+	psClick.play(0)
+	
+
+func _on_postSeekClick_finished():
 	if seekDir > 0:
 		nextTrack()
-	else:
+	elif seekDir < 0:
 		previousTrack()
+	else:
+		playTrack(currentTime)
